@@ -38,7 +38,7 @@ export class AuthService {
   }
 
   async signup(signupDto: SignupDto): Promise<UserEntity> {
-    const user = this.usersService.findByEmail(signupDto.email);
+    const user = await this.usersService.findByEmail(signupDto.email);
 
     if (user) {
       throw new BadRequestException('user with this email already exists');
