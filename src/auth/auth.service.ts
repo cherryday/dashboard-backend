@@ -1,5 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
+import * as jsonwebtoken from 'jsonwebtoken';
 import { UserEntity } from 'src/users/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { SigninDto } from './dto/signin.dto';
@@ -25,7 +26,15 @@ export class AuthService {
       throw new BadRequestException('wrong email or password');
     }
 
-    return 'TOKEN';
+    const token = jsonwebtoken.sign(
+      { email: user.email },
+      process.env.JWT_SECRET_KEY,
+      {
+        expiresIn: '5m',
+      },
+    );
+
+    return { accessToken: token };
   }
 
   async signup(signupDto: SignupDto): Promise<UserEntity> {
